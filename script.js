@@ -4,27 +4,9 @@ const app = document.getElementById("app");
 
 let storage = sessionStorage.getItem('data');
 
-if (!storage) {
-  loadData();
-}
-
-const setDataSessinStore = (data) => {
+const setDataSessionStore = async (data) => {
   sessionStorage.setItem('data', JSON.stringify(data));
 }
-
-async function loadData(){
-  try{
-    const response = await fetch(url);
-    const data = await response.json();
-
-    setDataSessinStore(data);
-    storage = sessionStorage.getItem('data');
-    renderContent();
-
-  } catch (error) {
-    console.error(error);
-  }
-};
 
 const getDataStorege = () => {
   const data =  JSON.parse(storage);
@@ -54,6 +36,24 @@ const history = (data) => {
   historyData.unshift(data);
   localStorage.setItem('history', JSON.stringify(historyData));
 };
+
+async function loadData(){
+  try{
+    const response = await fetch(url);
+    const data = await response.json();
+
+    setDataSessionStore(data);
+    storage = sessionStorage.getItem('data');
+    renderContent();
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+if (!storage) {
+ await loadData();
+}
 
 function renderContent(){
   const {data, id, src, author, likes} = getDataStorege();
